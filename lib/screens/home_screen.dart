@@ -65,6 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
             SliverToBoxAdapter(
                 child: SizedBox(
               width: size.width,
+              height: size.height * 0.25,
               child: CarouselSlider.builder(
                   itemCount: 2,
                   itemBuilder: (_, index, pageIndex) {
@@ -104,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
             )),
             SliverToBoxAdapter(
               child: SizedBox(
-                  height: 210,
+                  height: size.height * 0.24,
                   child: ListView.builder(
                     itemCount: movies.length,
                     scrollDirection: Axis.horizontal,
@@ -124,12 +125,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Stack(
                             children: [
                               SizedBox(
-                                width: 150,
+                                width: size.width * 0.35,
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Container(
-                                      height: 150,
+                                      height: size.height * 0.15,
                                       decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(12),
@@ -216,66 +217,78 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             SliverToBoxAdapter(
               child: SizedBox(
-                  height: 300,
+                  height: size.height * .3,
                   child: ListView.builder(
                     itemCount: movies.length,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (_, index) {
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Hero(
-                          tag: "movie$index",
-                          child: Material(
-                            type: MaterialType.transparency,
-                            child: GestureDetector(
-                              onTap: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) => MovieDetailScreen(
-                                            movie: movies[index],
-                                            imageUrl: movies[index].imageUrl,
-                                            tag: "movie$index",
-                                          ))),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(8),
-                                        color: const Color(0xff363636),
-                                        image: DecorationImage(
-                                            fit: BoxFit.cover,
-                                            image: NetworkImage(
-                                                movies[index].imageUrl))),
-                                    height: 220,
-                                    width: 150,
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  Text(
-                                    movies[index].title,
-                                    style: const TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  Row(
-                                    children: const [
-                                      Icon(Icons.access_time,
-                                          size: 16, color: Colors.white38),
-                                      SizedBox(
-                                        width: 5,
-                                      ),
-                                      Text("2h 28min",
-                                          style:
-                                              TextStyle(color: Colors.white38)),
-                                    ],
-                                  )
-                                ],
+                        child: SizedBox(
+                          width: size.width * 0.3,
+                          child: Hero(
+                            tag: "movie$index",
+                            child: Material(
+                              type: MaterialType.transparency,
+                              child: GestureDetector(
+                                onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) => MovieDetailScreen(
+                                              movie: movies[index],
+                                              imageUrl: movies[index].imageUrl,
+                                              tag: "movie$index",
+                                            ))),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          color: const Color(0xff363636),
+                                          image: DecorationImage(
+                                              fit: BoxFit.cover,
+                                              image: NetworkImage(
+                                                  movies[index].imageUrl))),
+                                      height: size.height * 0.2,
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          movies[index].title,
+                                          maxLines: 1,
+                                          style: const TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: const [
+                                        Icon(Icons.access_time,
+                                            size: 16, color: Colors.white38),
+                                        SizedBox(
+                                          width: 5,
+                                        ),
+                                        Text("2h 28min",
+                                            style: TextStyle(
+                                                color: Colors.white38)),
+                                      ],
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
                           ),

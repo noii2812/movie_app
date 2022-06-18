@@ -168,6 +168,7 @@ class SelectSeatBottomSheet extends StatefulWidget {
 class _SelectSeatBottomSheetState extends State<SelectSeatBottomSheet> {
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Container(
       height: widget.size.height * 0.75,
       child: CustomScaffold(
@@ -188,7 +189,7 @@ class _SelectSeatBottomSheetState extends State<SelectSeatBottomSheet> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                width: 120,
+                width: size.width * 0.25,
                 height: 3,
                 decoration: BoxDecoration(color: Colors.white, boxShadow: [
                   BoxShadow(
@@ -206,7 +207,7 @@ class _SelectSeatBottomSheetState extends State<SelectSeatBottomSheet> {
               return Column(
                 children: [
                   const SizedBox(
-                    height: 20,
+                    height: 10,
                   ),
                   BuildSeatRow(
                     row: rows[index],
@@ -225,7 +226,7 @@ class _SelectSeatBottomSheetState extends State<SelectSeatBottomSheet> {
               return Column(
                 children: [
                   const SizedBox(
-                    height: 20,
+                    height: 10,
                   ),
                   BuildSeatRow(
                     row: rows[index],
@@ -239,7 +240,7 @@ class _SelectSeatBottomSheetState extends State<SelectSeatBottomSheet> {
             }),
           ),
           const SizedBox(
-            height: 20,
+            height: 10,
           ),
           const BuildSeatRow(
             row: "A",
@@ -249,68 +250,77 @@ class _SelectSeatBottomSheetState extends State<SelectSeatBottomSheet> {
             seatHeight: 20,
           ),
           const SizedBox(
-            height: 20,
+            height: 10,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(4, (index) {
-                  int random = Random().nextInt(5);
-                  int bookRandom = Random().nextInt(10);
-                  return Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 1),
-                    height: 20,
-                    width: 35,
-                    decoration: BoxDecoration(
-                      color: index == random
-                          ? Color(0xffb30000)
-                          : index == bookRandom
-                              ? Colors.amber[700]
-                              : Colors.transparent,
-                      borderRadius: BorderRadius.circular(4),
-                      border: Border.all(
-                        color: Colors.white60,
-                      ),
-                    ),
-                    child: FittedBox(child: Text("Q$index")),
-                  );
-                }),
-              ),
-              Container(
-                width: 50,
-                height: 40,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: Colors.white60,
+          SizedBox(
+            width: size.width * 0.95,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(
+                  width: size.width * .4,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: List.generate(4, (index) {
+                      int random = Random().nextInt(5);
+                      int bookRandom = Random().nextInt(10);
+                      return Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 2),
+                        height: size.height * 0.04,
+                        width: size.width * 0.35 * 1 / 4,
+                        decoration: BoxDecoration(
+                          color: index == random
+                              ? Color(0xffb30000)
+                              : index == bookRandom
+                                  ? Colors.amber[700]
+                                  : Colors.transparent,
+                          borderRadius: BorderRadius.circular(2),
+                          border: Border.all(
+                            color: Colors.white60,
+                          ),
+                        ),
+                        // child: FittedBox(child: Text("Q$index")),
+                      );
+                    }),
                   ),
                 ),
-                child: const Center(child: Text("King")),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(4, (index) {
-                  int random = Random().nextInt(10);
-                  return Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 1),
-                    height: 20,
-                    width: 35,
-                    decoration: BoxDecoration(
-                      color: index == random
-                          ? Color(0xffb30000)
-                          : Colors.transparent,
-                      borderRadius: BorderRadius.circular(4),
-                      border: Border.all(
-                        color: Colors.white60,
-                      ),
+                Container(
+                  width: size.width * 0.1,
+                  height: size.height * 0.1,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: Colors.white60,
                     ),
-                    child: FittedBox(child: Text("Q${index + 5}")),
-                  );
-                }),
-              ),
-            ],
+                  ),
+                  child: const Center(child: Text("King")),
+                ),
+                SizedBox(
+                  width: size.width * .4,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: List.generate(4, (index) {
+                      int random = Random().nextInt(10);
+                      return Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 2),
+                        height: size.height * 0.04,
+                        width: size.width * 0.35 * 1 / 4,
+                        decoration: BoxDecoration(
+                          color: index == random
+                              ? Color(0xffb30000)
+                              : Colors.transparent,
+                          borderRadius: BorderRadius.circular(2),
+                          border: Border.all(
+                            color: Colors.white60,
+                          ),
+                        ),
+                        // child: FittedBox(child: Text("Q${index + 5}")),
+                      );
+                    }),
+                  ),
+                ),
+              ],
+            ),
           )
         ],
       )),
@@ -336,53 +346,71 @@ class BuildSeatRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(leftSideSeats, (index) {
-            int random = Random().nextInt(5);
-            int bookRandom = Random().nextInt(10);
-            return Container(
-              margin: const EdgeInsets.symmetric(horizontal: 1),
-              height: seatHeight,
-              width: seatWidth,
-              decoration: BoxDecoration(
-                color: index == random
-                    ? Color(0xffb30000)
-                    : index == bookRandom
-                        ? Colors.amber[700]
-                        : Colors.transparent,
-                borderRadius: BorderRadius.circular(4),
-                border: Border.all(
-                  color: Colors.white60,
-                ),
-              ),
-              child: FittedBox(child: Text("$row$index")),
-            );
-          }),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(rightSideSeats, (index) {
-            int random = Random().nextInt(10);
-            return Container(
-              margin: const EdgeInsets.symmetric(horizontal: 1),
-              height: seatHeight,
-              width: seatWidth,
-              decoration: BoxDecoration(
-                color: index == random ? Color(0xffb30000) : Colors.transparent,
-                borderRadius: BorderRadius.circular(4),
-                border: Border.all(
-                  color: Colors.white60,
-                ),
-              ),
-              child: FittedBox(child: Text("$row${index + 5}")),
-            );
-          }),
-        ),
-      ],
+    Size size = MediaQuery.of(context).size;
+    double fullWidth = size.width * 0.95;
+
+    return SizedBox(
+      width: fullWidth,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          SizedBox(
+            width: fullWidth * .5,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: List.generate(leftSideSeats, (index) {
+                int random = Random().nextInt(5);
+                int bookRandom = Random().nextInt(10);
+                return Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 1),
+                  height: (fullWidth / 2) * 0.1,
+                  width: (fullWidth / 2) * 0.86 / rightSideSeats,
+
+                  decoration: BoxDecoration(
+                    color: index == random
+                        ? Color(0xffb30000)
+                        : index == bookRandom
+                            ? Colors.amber[700]
+                            : Colors.transparent,
+                    borderRadius: BorderRadius.circular(2),
+                    border: Border.all(
+                      color: Colors.white60,
+                    ),
+                  ),
+                  // child: FittedBox(child: Text("$row$index")),
+                );
+              }),
+            ),
+          ),
+          SizedBox(
+            width: fullWidth * .5,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: List.generate(rightSideSeats, (index) {
+                int random = Random().nextInt(10);
+                return Padding(
+                  padding: const EdgeInsets.all(1.0),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 1),
+                    height: (fullWidth / 2) * 0.1,
+                    width: (fullWidth / 2) * 0.86 / rightSideSeats,
+                    decoration: BoxDecoration(
+                      color: index == random
+                          ? Color(0xffb30000)
+                          : Colors.transparent,
+                      borderRadius: BorderRadius.circular(2),
+                      border: Border.all(
+                        color: Colors.white60,
+                      ),
+                    ),
+                    // child: FittedBox(child: Text("$row${index + 5}")),
+                  ),
+                );
+              }),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
