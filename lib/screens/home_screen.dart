@@ -39,29 +39,29 @@ class _HomeScreenState extends State<HomeScreen> {
       body: CustomScaffold(
         body: CustomScrollView(
           slivers: [
-            SliverToBoxAdapter(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Text(
-                      "Comming Soon",
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
-                    ),
-                  ),
-                  TextButton(
-                      onPressed: () {},
-                      child: const Text(
-                        "",
-                        style: TextStyle(color: Colors.white38),
-                      ))
-                ],
-              ),
-            ),
+            // SliverToBoxAdapter(
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //     children: [
+            //       const Padding(
+            //         padding: EdgeInsets.symmetric(horizontal: 8.0),
+            //         child: Text(
+            //           "Comming Soon",
+            //           style: TextStyle(
+            //               fontSize: 16,
+            //               fontWeight: FontWeight.bold,
+            //               color: Colors.white),
+            //         ),
+            //       ),
+            //       TextButton(
+            //           onPressed: () {},
+            //           child: const Text(
+            //             "",
+            //             style: TextStyle(color: Colors.white38),
+            //           ))
+            //     ],
+            //   ),
+            // ),
             SliverToBoxAdapter(
                 child: SizedBox(
               width: size.width,
@@ -105,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
             )),
             SliverToBoxAdapter(
               child: SizedBox(
-                  height: size.height * 0.24,
+                  height: size.height * 0.25,
                   child: ListView.builder(
                     itemCount: movies.length,
                     scrollDirection: Axis.horizontal,
@@ -217,7 +217,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             SliverToBoxAdapter(
               child: SizedBox(
-                  height: size.height * .3,
+                  height: size.height * .4,
                   child: ListView.builder(
                     itemCount: movies.length,
                     scrollDirection: Axis.horizontal,
@@ -225,7 +225,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: SizedBox(
-                          width: size.width * 0.3,
+                          width: size.width * 0.4,
                           child: Hero(
                             tag: "movie$index",
                             child: Material(
@@ -251,7 +251,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                               fit: BoxFit.cover,
                                               image: NetworkImage(
                                                   movies[index].imageUrl))),
-                                      height: size.height * 0.2,
+                                      height: size.height * 0.3,
                                     ),
                                     const SizedBox(
                                       height: 5,
@@ -262,7 +262,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                       children: [
                                         Text(
                                           movies[index].title,
-                                          maxLines: 1,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
                                           style: const TextStyle(
                                               fontSize: 12,
                                               color: Colors.white,
@@ -275,7 +276,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                     Row(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                          MainAxisAlignment.start,
                                       children: const [
                                         Icon(Icons.access_time,
                                             size: 16, color: Colors.white38),

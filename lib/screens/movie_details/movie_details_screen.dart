@@ -24,94 +24,33 @@ class MovieDetailScreen extends StatefulWidget {
   State<MovieDetailScreen> createState() => _MovieDetailScreenState();
 }
 
-class _MovieDetailScreenState extends State<MovieDetailScreen> {
+class _MovieDetailScreenState extends State<MovieDetailScreen>
+    with TickerProviderStateMixin {
+  late AnimationController animationController;
+  ScrollController scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    animationController = BottomSheet.createAnimationController(this);
+    animationController.duration = const Duration(milliseconds: 500);
+    animationController.reverseDuration = const Duration(milliseconds: 500);
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      body: Stack(
-        alignment: FractionalOffset.center,
-        children: [
-          Hero(
-            tag: widget.tag,
-            child: Material(
-              type: MaterialType.transparency,
-              child: Container(
-                height: size.height,
-                width: size.width,
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: NetworkImage(widget.movie.imageUrl))),
-                child: Container(
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          begin: Alignment.bottomCenter,
-                          end: Alignment.topCenter,
-                          colors: [
-                        Colors.black.withOpacity(1),
-                        Colors.black.withOpacity(0.8),
-                        Colors.black.withOpacity(0.3),
-                        Colors.black.withOpacity(0.0),
-                      ])),
-                ),
-              ),
-            ),
-          ),
-          const Center(
-            child: Icon(
-              Icons.play_circle_filled,
-              size: 70,
-              color: Colors.white60,
-            ),
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: size.height * 0.55,
-              ),
-              Text(
-                widget.movie.title,
-                style:
-                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Text(
-                    "2021",
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                  Text(" | ", style: TextStyle(color: Colors.grey)),
-                  Text("Action", style: TextStyle(color: Colors.grey)),
-                  Text(" | ", style: TextStyle(color: Colors.grey)),
-                  Text("2h 28m", style: TextStyle(color: Colors.grey)),
-                ],
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(28.0),
-                child: Text(
-                  widget.movie.description,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.grey),
-                ),
-              )
-            ],
-          ),
-          Positioned(
-            top: 20,
-            left: 0,
-            child: Padding(
+      body: CustomScrollView(
+        physics: const NeverScrollableScrollPhysics(),
+        controller: scrollController,
+        slivers: [
+          SliverAppBar(
+            // backgroundColor: Colors.transparent,
+            leading: Padding(
               padding: const EdgeInsets.all(12.0),
               child: CupertinoButton(
-                padding: const EdgeInsets.all(10),
+                padding: const EdgeInsets.all(0),
                 color: Colors.white60,
                 borderRadius: BorderRadius.circular(50),
                 onPressed: () => Navigator.pop(context),
@@ -121,32 +60,136 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                 ),
               ),
             ),
+            expandedHeight: size.height,
+            floating: true,
+            pinned: true,
+            flexibleSpace: FlexibleSpaceBar(
+              background: GestureDetector(
+                onTap: () {
+                  scrollController.animateTo(0,
+                      duration: const Duration(milliseconds: 500),
+                      curve: Curves.easeInOut);
+                },
+                child: Stack(
+                  alignment: FractionalOffset.center,
+                  children: [
+                    Hero(
+                      tag: widget.tag,
+                      child: Material(
+                        type: MaterialType.transparency,
+                        child: Container(
+                          height: size.height,
+                          width: size.width,
+                          decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: NetworkImage(widget.movie.imageUrl))),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                    begin: Alignment.bottomCenter,
+                                    end: Alignment.topCenter,
+                                    colors: [
+                                  Colors.black.withOpacity(1),
+                                  Colors.black.withOpacity(0.8),
+                                  Colors.black.withOpacity(0.3),
+                                  Colors.black.withOpacity(0.0),
+                                ])),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const Center(
+                      child: Icon(
+                        Icons.play_circle_filled,
+                        size: 70,
+                        color: Colors.white60,
+                      ),
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        SizedBox(height: size.height * 0.56),
+                        Text(
+                          widget.movie.title,
+                          style: const TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Text(
+                              "2021",
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                            Text(" | ", style: TextStyle(color: Colors.grey)),
+                            Text("Action",
+                                style: TextStyle(color: Colors.grey)),
+                            Text(" | ", style: TextStyle(color: Colors.grey)),
+                            Text("2h 28m",
+                                style: TextStyle(color: Colors.grey)),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(28.0),
+                          child: Text(
+                            widget.movie.description,
+                            textAlign: TextAlign.center,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 7,
+                            style: const TextStyle(color: Colors.grey),
+                          ),
+                        )
+                      ],
+                    ),
+                    Positioned(
+                        bottom: 20,
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 30),
+                          child: TextButton(
+                              style: ButtonStyle(
+                                  padding: MaterialStateProperty.resolveWith(
+                                      (states) => const EdgeInsets.symmetric(
+                                          horizontal: 30, vertical: 16)),
+                                  backgroundColor:
+                                      MaterialStateProperty.resolveWith(
+                                          (states) => Colors.red)),
+                              onPressed: () {
+                                // scrollController.animateTo(size.height * 0.9,
+                                //     duration: const Duration(milliseconds: 500),
+                                //     curve: Curves.easeInOut);
+                                showModalBottomSheet(
+                                    enableDrag: false,
+                                    isDismissible: false,
+                                    transitionAnimationController:
+                                        animationController,
+                                    isScrollControlled: true,
+                                    backgroundColor: Colors.transparent,
+                                    context: context,
+                                    builder: (_) =>
+                                        SelectSeatBottomSheet(size: size));
+                              },
+                              child: const Text(
+                                "Book Now",
+                                style: TextStyle(color: Colors.white),
+                              )),
+                        )),
+                  ],
+                ),
+              ),
+            ),
           ),
-          Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 30),
-                child: TextButton(
-                    style: ButtonStyle(
-                        padding: MaterialStateProperty.resolveWith((states) =>
-                            const EdgeInsets.symmetric(
-                                horizontal: 30, vertical: 16)),
-                        backgroundColor: MaterialStateProperty.resolveWith(
-                            (states) => Colors.red)),
-                    onPressed: () {
-                      showModalBottomSheet(
-                          isScrollControlled: true,
-                          backgroundColor: Colors.transparent,
-                          context: context,
-                          builder: (_) => StatefulBuilder(
-                              builder: ((context, setState) =>
-                                  SelectSeatBottomSheet(size: size))));
-                    },
-                    child: const Text(
-                      "Book Now",
-                      style: TextStyle(color: Colors.white),
-                    )),
-              )),
+          // SliverToBoxAdapter(
+          //   child: SelectSeatBottomSheet(
+          //     size: size,
+          //   ),
+          // )
         ],
       ),
     );
@@ -169,162 +212,245 @@ class _SelectSeatBottomSheetState extends State<SelectSeatBottomSheet> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return Container(
-      height: widget.size.height * 0.75,
-      child: CustomScaffold(
-          body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const SizedBox(
-            height: 20,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: const [Text("Screen")],
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: size.width * 0.25,
-                height: 3,
-                decoration: BoxDecoration(color: Colors.white, boxShadow: [
-                  BoxShadow(
-                      blurRadius: 50,
-                      spreadRadius: 5,
-                      color: Colors.white.withOpacity(0.8),
-                      offset: Offset(0, 15))
-                ]),
-              ),
-            ],
-          ),
-          Column(
-            children: List.generate(8, (index) {
-              List<String> rows = ["D", "E", "F", "G", "H", "I", "J", "K"];
-              return Column(
-                children: [
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  BuildSeatRow(
-                    row: rows[index],
-                    leftSideSeats: 10,
-                    rightSideSeats: 10,
-                    seatWidth: 15,
-                    seatHeight: 15,
-                  )
-                ],
-              );
-            }),
-          ),
-          Column(
-            children: List.generate(2, (index) {
-              List<String> rows = ["B", "C"];
-              return Column(
-                children: [
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  BuildSeatRow(
-                    row: rows[index],
-                    leftSideSeats: 4,
-                    rightSideSeats: 4,
-                    seatWidth: 40,
-                    seatHeight: 20,
-                  )
-                ],
-              );
-            }),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          const BuildSeatRow(
-            row: "A",
-            leftSideSeats: 5,
-            rightSideSeats: 5,
-            seatWidth: 32,
-            seatHeight: 20,
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          SizedBox(
-            width: size.width * 0.95,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return SizedBox(
+        height: size.height,
+        child: Stack(
+          alignment: FractionalOffset.center,
+          children: [
+            BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+              child: Container(),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(
-                  width: size.width * .4,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: List.generate(4, (index) {
-                      int random = Random().nextInt(5);
-                      int bookRandom = Random().nextInt(10);
-                      return Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 2),
-                        height: size.height * 0.04,
-                        width: size.width * 0.35 * 1 / 4,
-                        decoration: BoxDecoration(
-                          color: index == random
-                              ? Color(0xffb30000)
-                              : index == bookRandom
-                                  ? Colors.amber[700]
-                                  : Colors.transparent,
-                          borderRadius: BorderRadius.circular(2),
-                          border: Border.all(
-                            color: Colors.white60,
-                          ),
-                        ),
-                        // child: FittedBox(child: Text("Q$index")),
-                      );
-                    }),
-                  ),
+                const SizedBox(
+                  height: 30,
                 ),
-                Container(
-                  width: size.width * 0.1,
-                  height: size.height * 0.1,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: Colors.white60,
+                Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CupertinoButton(
+                        color: Colors.white10,
+                        padding: const EdgeInsets.all(10),
+                        borderRadius: BorderRadius.circular(50),
+                        onPressed: () => Navigator.pop(context),
+                        child: const Icon(Icons.arrow_back),
+                      ),
+                    )
+                  ],
+                ),
+                const SizedBox(height: 20),
+                SizedBox(
+                  height: 35,
+                  child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: 5,
+                      itemBuilder: (_, index) {
+                        return Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 8),
+                          width: 120,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4),
+                              color: index == 0
+                                  ? const Color(0xffb30000)
+                                  : Colors.white),
+                          child: Center(
+                              child: Text(
+                            "Today",
+                            style: TextStyle(
+                                color: index != 0
+                                    ? const Color(0xffb30000)
+                                    : Colors.white),
+                          )),
+                        );
+                      }),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                SizedBox(
+                  height: 35,
+                  child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: 5,
+                      itemBuilder: (_, index) {
+                        return Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 8),
+                          width: 80,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4),
+                              color: index == 0
+                                  ? const Color(0xffb30000)
+                                  : Colors.white10),
+                          child: const Center(
+                              child: Text("9:30 Am",
+                                  style: TextStyle(color: Colors.white))),
+                        );
+                      }),
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [Text("Screen")],
+                ),
+                const SizedBox(
+                  height: 5,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 200,
+                      height: 5.0,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.vertical(
+                            top: Radius.elliptical(size.width, 100.0)),
+                      ),
                     ),
-                  ),
-                  child: const Center(child: Text("King")),
+                  ],
+                ),
+                const SizedBox(
+                  height: 5,
+                ),
+                Column(
+                  children: List.generate(8, (index) {
+                    List<String> rows = [
+                      "D",
+                      "E",
+                      "F",
+                      "G",
+                      "H",
+                      "I",
+                      "J",
+                      "K"
+                    ];
+                    return Column(
+                      children: [
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        BuildSeatRow(
+                          row: rows[index],
+                          leftSideSeats: 10,
+                          rightSideSeats: 10,
+                          seatWidth: 15,
+                          seatHeight: 15,
+                        )
+                      ],
+                    );
+                  }),
+                ),
+                Column(
+                  children: List.generate(2, (index) {
+                    List<String> rows = ["B", "C"];
+                    return Column(
+                      children: [
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        BuildSeatRow(
+                          row: rows[index],
+                          leftSideSeats: 4,
+                          rightSideSeats: 4,
+                          seatWidth: 40,
+                          seatHeight: 20,
+                        )
+                      ],
+                    );
+                  }),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                const BuildSeatRow(
+                  row: "A",
+                  leftSideSeats: 5,
+                  rightSideSeats: 5,
+                  seatWidth: 32,
+                  seatHeight: 20,
+                ),
+                const SizedBox(
+                  height: 10,
                 ),
                 SizedBox(
-                  width: size.width * .4,
+                  width: size.width * 0.95,
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: List.generate(4, (index) {
-                      int random = Random().nextInt(10);
-                      return Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 2),
-                        height: size.height * 0.04,
-                        width: size.width * 0.35 * 1 / 4,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        width: size.width * .4,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: List.generate(4, (index) {
+                            int random = Random().nextInt(5);
+                            int bookRandom = Random().nextInt(10);
+                            return Container(
+                              margin: const EdgeInsets.symmetric(horizontal: 2),
+                              height: size.height * 0.04,
+                              width: size.width * 0.35 * 1 / 4,
+                              decoration: BoxDecoration(
+                                color: index == random
+                                    ? Color(0xffb30000)
+                                    : index == bookRandom
+                                        ? Colors.amber[700]
+                                        : Colors.transparent,
+                                borderRadius: BorderRadius.circular(2),
+                                border: Border.all(
+                                  color: Colors.white60,
+                                ),
+                              ),
+                              // child: FittedBox(child: Text("Q$index")),
+                            );
+                          }),
+                        ),
+                      ),
+                      Container(
+                        width: size.width * 0.1,
+                        height: size.height * 0.1,
                         decoration: BoxDecoration(
-                          color: index == random
-                              ? Color(0xffb30000)
-                              : Colors.transparent,
-                          borderRadius: BorderRadius.circular(2),
+                          shape: BoxShape.circle,
                           border: Border.all(
                             color: Colors.white60,
                           ),
                         ),
-                        // child: FittedBox(child: Text("Q${index + 5}")),
-                      );
-                    }),
+                        child: const Center(child: Text("King")),
+                      ),
+                      SizedBox(
+                        width: size.width * .4,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: List.generate(4, (index) {
+                            int random = Random().nextInt(10);
+                            return Container(
+                              margin: const EdgeInsets.symmetric(horizontal: 2),
+                              height: size.height * 0.04,
+                              width: size.width * 0.35 * 1 / 4,
+                              decoration: BoxDecoration(
+                                color: index == random
+                                    ? Color(0xffb30000)
+                                    : Colors.transparent,
+                                borderRadius: BorderRadius.circular(2),
+                                border: Border.all(
+                                  color: Colors.white60,
+                                ),
+                              ),
+                              // child: FittedBox(child: Text("Q${index + 5}")),
+                            );
+                          }),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
+                )
               ],
             ),
-          )
-        ],
-      )),
-    );
+          ],
+        ));
   }
 }
 
@@ -396,7 +522,7 @@ class BuildSeatRow extends StatelessWidget {
                     width: (fullWidth / 2) * 0.86 / rightSideSeats,
                     decoration: BoxDecoration(
                       color: index == random
-                          ? Color(0xffb30000)
+                          ? const Color(0xffb30000)
                           : Colors.transparent,
                       borderRadius: BorderRadius.circular(2),
                       border: Border.all(
@@ -413,4 +539,25 @@ class BuildSeatRow extends StatelessWidget {
       ),
     );
   }
+}
+
+class CurveClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    int curveHeight = 40;
+    Offset controlPoint = Offset(size.width / 2, size.height - curveHeight);
+    Offset endPoint = Offset(size.width, size.height - curveHeight);
+
+    Path path = Path()
+      ..lineTo(-size.height, size.height + curveHeight)
+      ..quadraticBezierTo(
+          endPoint.dx, endPoint.dy, controlPoint.dx, controlPoint.dy)
+      ..lineTo(size.width, size.height - curveHeight)
+      ..close();
+
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
