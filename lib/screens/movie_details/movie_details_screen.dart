@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
@@ -5,11 +6,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/widgets.dart';
+import 'package:movie_app/models/movie.dart';
+import 'package:movie_app/screens/home_screen.dart';
 
 class MovieDetailScreen extends StatefulWidget {
   final String imageUrl;
   final String tag;
-  const MovieDetailScreen({Key? key, required this.imageUrl, required this.tag})
+  final Movie movie;
+  const MovieDetailScreen(
+      {Key? key,
+      required this.imageUrl,
+      required this.tag,
+      required this.movie})
       : super(key: key);
 
   @override
@@ -34,7 +42,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                 decoration: BoxDecoration(
                     image: DecorationImage(
                         fit: BoxFit.cover,
-                        image: NetworkImage(widget.imageUrl))),
+                        image: NetworkImage(widget.movie.imageUrl))),
                 child: Container(
                   decoration: BoxDecoration(
                       gradient: LinearGradient(
@@ -57,45 +65,16 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
               color: Colors.white60,
             ),
           ),
-          // Align(
-          //   alignment: Alignment.bottomCenter,
-          //   child: ClipRRect(
-          //     // borderRadius: BorderRadius.circular(50
-          //     //     // topRight: Radius.circular(15),
-          //     //     // topLeft: Radius.circular(15),
-          //     //     ),
-          //     child: BackdropFilter(
-          //       filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
-          //       child: Container(
-          //         height: 220,
-          //         padding: const EdgeInsets.only(
-          //             top: 10), //use margin instead of padding,
-          //         // clipBehavior: Clip.antiAlias,
-          //         decoration: BoxDecoration(
-          //             // gradient: LinearGradient(
-          //             //     begin: Alignment.bottomCenter,
-          //             //     end: Alignment.topCenter,
-          //             //     colors: [
-          //             //       Colors.black.withOpacity(.8),
-          //             //       Colors.black.withOpacity(.1),
-          //             //       Colors.white.withOpacity(.0),
-          //             //       Colors.white.withOpacity(.0),
-          //             //     ]),
-          //             // color: Colors.black.withOpacity(.2),
-          //             borderRadius: BorderRadius.circular(0)),
-          //       ),
-          //     ),
-          //   ),
-          //s ),
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               SizedBox(
                 height: size.height * 0.55,
               ),
-              const Text(
-                "Spider-Man No Way Home",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              Text(
+                widget.movie.title,
+                style:
+                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(
                 height: 10,
@@ -116,13 +95,12 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
               const SizedBox(
                 height: 20,
               ),
-              const Padding(
-                padding: EdgeInsets.all(28.0),
+              Padding(
+                padding: const EdgeInsets.all(28.0),
                 child: Text(
-                  '''
-With Spider-Man's identity now revealed, Peter asks Doctor Strange for help. When a spell goes wrong, dangerous foes from other worlds start to appear, forcing Peter to discover what it truly means to be Spider-Man.''',
+                  widget.movie.description,
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.grey),
+                  style: const TextStyle(color: Colors.grey),
                 ),
               )
             ],
@@ -151,17 +129,260 @@ With Spider-Man's identity now revealed, Peter asks Doctor Strange for help. Whe
                 child: TextButton(
                     style: ButtonStyle(
                         padding: MaterialStateProperty.resolveWith((states) =>
-                            EdgeInsets.symmetric(horizontal: 30, vertical: 16)),
+                            const EdgeInsets.symmetric(
+                                horizontal: 30, vertical: 16)),
                         backgroundColor: MaterialStateProperty.resolveWith(
                             (states) => Colors.red)),
-                    onPressed: () {},
-                    child: Text(
+                    onPressed: () {
+                      showModalBottomSheet(
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          context: context,
+                          builder: (_) => StatefulBuilder(
+                              builder: ((context, setState) =>
+                                  SelectSeatBottomSheet(size: size))));
+                    },
+                    child: const Text(
                       "Book Now",
                       style: TextStyle(color: Colors.white),
                     )),
               )),
         ],
       ),
+    );
+  }
+}
+
+class SelectSeatBottomSheet extends StatefulWidget {
+  const SelectSeatBottomSheet({
+    Key? key,
+    required this.size,
+  }) : super(key: key);
+
+  final Size size;
+
+  @override
+  State<SelectSeatBottomSheet> createState() => _SelectSeatBottomSheetState();
+}
+
+class _SelectSeatBottomSheetState extends State<SelectSeatBottomSheet> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: widget.size.height * 0.75,
+      child: CustomScaffold(
+          body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const SizedBox(
+            height: 20,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [Text("Screen")],
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: 120,
+                height: 3,
+                decoration: BoxDecoration(color: Colors.white, boxShadow: [
+                  BoxShadow(
+                      blurRadius: 50,
+                      spreadRadius: 5,
+                      color: Colors.white.withOpacity(0.8),
+                      offset: Offset(0, 15))
+                ]),
+              ),
+            ],
+          ),
+          Column(
+            children: List.generate(8, (index) {
+              List<String> rows = ["D", "E", "F", "G", "H", "I", "J", "K"];
+              return Column(
+                children: [
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  BuildSeatRow(
+                    row: rows[index],
+                    leftSideSeats: 10,
+                    rightSideSeats: 10,
+                    seatWidth: 15,
+                    seatHeight: 15,
+                  )
+                ],
+              );
+            }),
+          ),
+          Column(
+            children: List.generate(2, (index) {
+              List<String> rows = ["B", "C"];
+              return Column(
+                children: [
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  BuildSeatRow(
+                    row: rows[index],
+                    leftSideSeats: 4,
+                    rightSideSeats: 4,
+                    seatWidth: 40,
+                    seatHeight: 20,
+                  )
+                ],
+              );
+            }),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          const BuildSeatRow(
+            row: "A",
+            leftSideSeats: 5,
+            rightSideSeats: 5,
+            seatWidth: 32,
+            seatHeight: 20,
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(4, (index) {
+                  int random = Random().nextInt(5);
+                  int bookRandom = Random().nextInt(10);
+                  return Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 1),
+                    height: 20,
+                    width: 35,
+                    decoration: BoxDecoration(
+                      color: index == random
+                          ? Color(0xffb30000)
+                          : index == bookRandom
+                              ? Colors.amber[700]
+                              : Colors.transparent,
+                      borderRadius: BorderRadius.circular(4),
+                      border: Border.all(
+                        color: Colors.white60,
+                      ),
+                    ),
+                    child: FittedBox(child: Text("Q$index")),
+                  );
+                }),
+              ),
+              Container(
+                width: 50,
+                height: 40,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: Colors.white60,
+                  ),
+                ),
+                child: const Center(child: Text("King")),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(4, (index) {
+                  int random = Random().nextInt(10);
+                  return Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 1),
+                    height: 20,
+                    width: 35,
+                    decoration: BoxDecoration(
+                      color: index == random
+                          ? Color(0xffb30000)
+                          : Colors.transparent,
+                      borderRadius: BorderRadius.circular(4),
+                      border: Border.all(
+                        color: Colors.white60,
+                      ),
+                    ),
+                    child: FittedBox(child: Text("Q${index + 5}")),
+                  );
+                }),
+              ),
+            ],
+          )
+        ],
+      )),
+    );
+  }
+}
+
+class BuildSeatRow extends StatelessWidget {
+  final int leftSideSeats;
+  final int rightSideSeats;
+  final double seatWidth;
+  final double seatHeight;
+  final String row;
+
+  const BuildSeatRow({
+    Key? key,
+    required this.leftSideSeats,
+    required this.rightSideSeats,
+    required this.seatWidth,
+    required this.seatHeight,
+    required this.row,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(leftSideSeats, (index) {
+            int random = Random().nextInt(5);
+            int bookRandom = Random().nextInt(10);
+            return Container(
+              margin: const EdgeInsets.symmetric(horizontal: 1),
+              height: seatHeight,
+              width: seatWidth,
+              decoration: BoxDecoration(
+                color: index == random
+                    ? Color(0xffb30000)
+                    : index == bookRandom
+                        ? Colors.amber[700]
+                        : Colors.transparent,
+                borderRadius: BorderRadius.circular(4),
+                border: Border.all(
+                  color: Colors.white60,
+                ),
+              ),
+              child: FittedBox(child: Text("$row$index")),
+            );
+          }),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(rightSideSeats, (index) {
+            int random = Random().nextInt(10);
+            return Container(
+              margin: const EdgeInsets.symmetric(horizontal: 1),
+              height: seatHeight,
+              width: seatWidth,
+              decoration: BoxDecoration(
+                color: index == random ? Color(0xffb30000) : Colors.transparent,
+                borderRadius: BorderRadius.circular(4),
+                border: Border.all(
+                  color: Colors.white60,
+                ),
+              ),
+              child: FittedBox(child: Text("$row${index + 5}")),
+            );
+          }),
+        ),
+      ],
     );
   }
 }

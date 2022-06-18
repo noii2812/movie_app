@@ -20,8 +20,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           brightness: Brightness.dark,
           scaffoldBackgroundColor: Colors.black,
-          appBarTheme:
-              const AppBarTheme(backgroundColor: Colors.black, elevation: 0)),
+          appBarTheme: const AppBarTheme(
+              backgroundColor: Colors.transparent, elevation: 0)),
       debugShowCheckedModeBanner: false,
       home: const HomeScreen(),
     );
