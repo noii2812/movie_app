@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 import 'package:movie_app/models/movie.dart';
 import 'package:movie_app/screens/home_screen.dart';
 
@@ -33,8 +34,8 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
   void initState() {
     super.initState();
     animationController = BottomSheet.createAnimationController(this);
-    animationController.duration = const Duration(milliseconds: 500);
-    animationController.reverseDuration = const Duration(milliseconds: 500);
+    animationController.duration = const Duration(milliseconds: 300);
+    animationController.reverseDuration = const Duration(milliseconds: 300);
   }
 
   @override
@@ -172,8 +173,10 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
                                     isScrollControlled: true,
                                     backgroundColor: Colors.transparent,
                                     context: context,
-                                    builder: (_) =>
-                                        SelectSeatBottomSheet(size: size));
+                                    builder: (_) => SelectSeatBottomSheet(
+                                          size: size,
+                                          movie: widget.movie,
+                                        ));
                               },
                               child: const Text(
                                 "Book Now",
@@ -197,9 +200,11 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
 }
 
 class SelectSeatBottomSheet extends StatefulWidget {
+  final Movie movie;
   const SelectSeatBottomSheet({
     Key? key,
     required this.size,
+    required this.movie,
   }) : super(key: key);
 
   final Size size;
@@ -209,6 +214,12 @@ class SelectSeatBottomSheet extends StatefulWidget {
 }
 
 class _SelectSeatBottomSheetState extends State<SelectSeatBottomSheet> {
+  bool isToday(DateTime date) {
+    final now = DateTime.now();
+    final diff = now.difference(date).inDays;
+    return diff == 0 && now.day == date.day;
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -228,42 +239,94 @@ class _SelectSeatBottomSheetState extends State<SelectSeatBottomSheet> {
                   height: 30,
                 ),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: CupertinoButton(
-                        color: Colors.white10,
-                        padding: const EdgeInsets.all(10),
-                        borderRadius: BorderRadius.circular(50),
-                        onPressed: () => Navigator.pop(context),
-                        child: const Icon(Icons.arrow_back),
+                    Expanded(
+                      flex: 1,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: CupertinoButton(
+                          color: Colors.white10,
+                          padding: const EdgeInsets.all(10),
+                          borderRadius: BorderRadius.circular(50),
+                          onPressed: () => Navigator.pop(context),
+                          child: const Icon(Icons.arrow_back),
+                        ),
                       ),
-                    )
+                    ),
+                    Expanded(
+                        flex: 4,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              widget.movie.title,
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                          ],
+                        )),
+                    Expanded(
+                        flex: 1,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: CupertinoButton(
+                            color: Colors.white10,
+                            padding: const EdgeInsets.all(10),
+                            borderRadius: BorderRadius.circular(50),
+                            onPressed: () => Navigator.pop(context),
+                            child: const Icon(Icons.check),
+                          ),
+                        )),
                   ],
                 ),
                 const SizedBox(height: 20),
                 SizedBox(
-                  height: 35,
+                  height: 100,
                   child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       itemCount: 5,
                       itemBuilder: (_, index) {
-                        return Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 8),
-                          width: 120,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(4),
-                              color: index == 0
-                                  ? const Color(0xffb30000)
-                                  : Colors.white),
-                          child: Center(
-                              child: Text(
-                            "Today",
-                            style: TextStyle(
-                                color: index != 0
-                                    ? const Color(0xffb30000)
-                                    : Colors.white),
-                          )),
+                        return Stack(
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.symmetric(horizontal: 8),
+                              width: 90,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(4),
+                                  color: index == 0
+                                      ? const Color(0xffb30000)
+                                      : Colors.white10),
+                              child: Center(
+                                  child: Text(
+                                isToday(DateTime(
+                                        DateTime.now().year,
+                                        DateTime.now().month,
+                                        DateTime.now().day + index))
+                                    ? "Today"
+                                    : DateFormat("EE \ndd").format(DateTime(
+                                        DateTime.now().year,
+                                        DateTime.now().month,
+                                        DateTime.now().day + index)),
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold),
+                              )),
+                            ),
+                            Positioned(
+                              top: 5,
+                              left: 0,
+                              right: 0,
+                              child: Container(
+                                width: 10,
+                                height: 10,
+                                decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.white70),
+                              ),
+                            )
+                          ],
                         );
                       }),
                 ),
@@ -276,6 +339,13 @@ class _SelectSeatBottomSheetState extends State<SelectSeatBottomSheet> {
                       scrollDirection: Axis.horizontal,
                       itemCount: 5,
                       itemBuilder: (_, index) {
+                        List<String> showHours = [
+                          "9:30 Am",
+                          "11:30 Am",
+                          "2:00 Pm",
+                          "4:30 Pm",
+                          "7:00 Pm"
+                        ];
                         return Container(
                           margin: const EdgeInsets.symmetric(horizontal: 8),
                           width: 80,
@@ -284,9 +354,9 @@ class _SelectSeatBottomSheetState extends State<SelectSeatBottomSheet> {
                               color: index == 0
                                   ? const Color(0xffb30000)
                                   : Colors.white10),
-                          child: const Center(
-                              child: Text("9:30 Am",
-                                  style: TextStyle(color: Colors.white))),
+                          child: Center(
+                              child: Text(showHours[index],
+                                  style: const TextStyle(color: Colors.white))),
                         );
                       }),
                 ),
@@ -319,23 +389,15 @@ class _SelectSeatBottomSheetState extends State<SelectSeatBottomSheet> {
                 ),
                 Column(
                   children: List.generate(8, (index) {
-                    List<String> rows = [
-                      "D",
-                      "E",
-                      "F",
-                      "G",
-                      "H",
-                      "I",
-                      "J",
-                      "K"
-                    ];
+                    List<String> rows = ["D", "E", "F", "G", "H", "I", "J", "K"]
+                      ..reversed;
                     return Column(
                       children: [
                         const SizedBox(
                           height: 10,
                         ),
                         BuildSeatRow(
-                          row: rows[index],
+                          row: rows.reversed.toList()[index],
                           leftSideSeats: 10,
                           rightSideSeats: 10,
                           seatWidth: 15,
@@ -354,7 +416,7 @@ class _SelectSeatBottomSheetState extends State<SelectSeatBottomSheet> {
                           height: 10,
                         ),
                         BuildSeatRow(
-                          row: rows[index],
+                          row: rows.reversed.toList()[index],
                           leftSideSeats: 4,
                           rightSideSeats: 4,
                           seatWidth: 40,
@@ -395,7 +457,7 @@ class _SelectSeatBottomSheetState extends State<SelectSeatBottomSheet> {
                               width: size.width * 0.35 * 1 / 4,
                               decoration: BoxDecoration(
                                 color: index == random
-                                    ? Color(0xffb30000)
+                                    ? const Color(0xffb30000)
                                     : index == bookRandom
                                         ? Colors.amber[700]
                                         : Colors.transparent,
@@ -404,7 +466,12 @@ class _SelectSeatBottomSheetState extends State<SelectSeatBottomSheet> {
                                   color: Colors.white60,
                                 ),
                               ),
-                              // child: FittedBox(child: Text("Q$index")),
+                              child: FittedBox(
+                                  fit: BoxFit.none,
+                                  child: Text(
+                                    "Q$index",
+                                    style: const TextStyle(fontSize: 12),
+                                  )),
                             );
                           }),
                         ),
@@ -432,14 +499,19 @@ class _SelectSeatBottomSheetState extends State<SelectSeatBottomSheet> {
                               width: size.width * 0.35 * 1 / 4,
                               decoration: BoxDecoration(
                                 color: index == random
-                                    ? Color(0xffb30000)
+                                    ? const Color(0xffb30000)
                                     : Colors.transparent,
                                 borderRadius: BorderRadius.circular(2),
                                 border: Border.all(
                                   color: Colors.white60,
                                 ),
                               ),
-                              // child: FittedBox(child: Text("Q${index + 5}")),
+                              child: Center(
+                                child: Text(
+                                  "Q${index + 5}",
+                                  style: const TextStyle(fontSize: 12),
+                                ),
+                              ),
                             );
                           }),
                         ),
@@ -491,10 +563,9 @@ class BuildSeatRow extends StatelessWidget {
                   margin: const EdgeInsets.symmetric(horizontal: 1),
                   height: (fullWidth / 2) * 0.1,
                   width: (fullWidth / 2) * 0.86 / rightSideSeats,
-
                   decoration: BoxDecoration(
                     color: index == random
-                        ? Color(0xffb30000)
+                        ? const Color(0xffb30000)
                         : index == bookRandom
                             ? Colors.amber[700]
                             : Colors.transparent,
@@ -503,7 +574,7 @@ class BuildSeatRow extends StatelessWidget {
                       color: Colors.white60,
                     ),
                   ),
-                  // child: FittedBox(child: Text("$row$index")),
+                  child: FittedBox(child: Text("$row$index")),
                 );
               }),
             ),
@@ -529,7 +600,7 @@ class BuildSeatRow extends StatelessWidget {
                         color: Colors.white60,
                       ),
                     ),
-                    // child: FittedBox(child: Text("$row${index + 5}")),
+                    child: FittedBox(child: Text("$row${index + 5}")),
                   ),
                 );
               }),
