@@ -3,12 +3,9 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/widgets.dart';
+
 import 'package:intl/intl.dart';
 import 'package:movie_app/models/movie.dart';
-import 'package:movie_app/screens/home_screen.dart';
 
 class MovieDetailScreen extends StatefulWidget {
   final String imageUrl;
@@ -100,17 +97,23 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
                         ),
                       ),
                     ),
-                    const Center(
-                      child: Icon(
-                        Icons.play_circle_filled,
-                        size: 70,
-                        color: Colors.white60,
+                    SizedBox(
+                      width: 60,
+                      height: 60,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(50),
+                        child: BackdropFilter(
+                            filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                            child: const Icon(
+                              Icons.play_arrow_rounded,
+                              size: 28,
+                            )),
                       ),
                     ),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        SizedBox(height: size.height * 0.56),
+                        SizedBox(height: size.height * 0.56 + 10),
                         Text(
                           widget.movie.title,
                           style: const TextStyle(
@@ -150,7 +153,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
                       ],
                     ),
                     Positioned(
-                        bottom: 20,
+                        bottom: size.height * 0.05,
                         child: Padding(
                           padding: const EdgeInsets.only(bottom: 30),
                           child: TextButton(
@@ -230,13 +233,15 @@ class _SelectSeatBottomSheetState extends State<SelectSeatBottomSheet> {
           children: [
             BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-              child: Container(),
+              child: Container(
+                color: Colors.black.withOpacity(.2),
+              ),
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(
-                  height: 30,
+                SizedBox(
+                  height: size.height * 0.05,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -352,7 +357,7 @@ class _SelectSeatBottomSheetState extends State<SelectSeatBottomSheet> {
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(4),
                               color: index == 0
-                                  ? const Color(0xffb30000)
+                                  ? Colors.amber[700]
                                   : Colors.white10),
                           child: Center(
                               child: Text(showHours[index],
@@ -374,7 +379,7 @@ class _SelectSeatBottomSheetState extends State<SelectSeatBottomSheet> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      width: 200,
+                      width: size.width * 0.5,
                       height: 5.0,
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -574,7 +579,12 @@ class BuildSeatRow extends StatelessWidget {
                       color: Colors.white60,
                     ),
                   ),
-                  child: FittedBox(child: Text("$row$index")),
+                  child: size.width < 600
+                      ? const Text("")
+                      : Text(
+                          "$row$index",
+                          style: const TextStyle(fontSize: 12),
+                        ),
                 );
               }),
             ),
@@ -600,7 +610,12 @@ class BuildSeatRow extends StatelessWidget {
                         color: Colors.white60,
                       ),
                     ),
-                    child: FittedBox(child: Text("$row${index + 5}")),
+                    child: size.width < 600
+                        ? const Text("")
+                        : Text(
+                            "$row${index + 5}",
+                            style: const TextStyle(fontSize: 12),
+                          ),
                   ),
                 );
               }),
