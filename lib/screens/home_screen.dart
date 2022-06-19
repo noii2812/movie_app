@@ -258,11 +258,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                     Row(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                          MainAxisAlignment.start,
                                       children: [
                                         Text(
                                           movies[index].title,
-                                          maxLines: 2,
+                                          maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                           style: const TextStyle(
                                               fontSize: 12,
@@ -277,14 +277,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.start,
-                                      children: const [
-                                        Icon(Icons.access_time,
+                                      children: [
+                                        const Icon(Icons.access_time,
                                             size: 16, color: Colors.white38),
-                                        SizedBox(
+                                        const SizedBox(
                                           width: 5,
                                         ),
-                                        Text("2h 28min",
-                                            style: TextStyle(
+                                        Text("${movies[index].durations} min",
+                                            style: const TextStyle(
                                                 color: Colors.white38)),
                                       ],
                                     )
