@@ -1,5 +1,6 @@
 List<Map<String, dynamic>> moviesData = [
   {
+    "id": 1,
     "title": "Spider-Man No Way Home",
     "genre": "Action",
     "durations": 148,
@@ -10,6 +11,7 @@ List<Map<String, dynamic>> moviesData = [
         "With Spider-Man's identity now revealed, Peter asks Doctor Strange for help. When a spell goes wrong, dangerous foes from other worlds start to appear, forcing Peter to discover what it truly means to be Spider-Man."
   },
   {
+    "id": 2,
     "title": "Avenger Endgame",
     "genre": "Action",
     "durations": 188,
@@ -20,6 +22,7 @@ List<Map<String, dynamic>> moviesData = [
         "After the devastating events of Avengers: Infinity War (2018), the universe is in ruins. With the help of remaining allies, the Avengers assemble once more in order to reverse Thanos' actions and restore balance to the universe."
   },
   {
+    "id": 3,
     "title": "Black Widow",
     "genre": "Action",
     "durations": 148,
@@ -29,6 +32,7 @@ List<Map<String, dynamic>> moviesData = [
         "With Spider-Man's identity now revealed, Peter asks Doctor Strange for help. When a spell goes wrong, dangerous foes from other worlds start to appear, forcing Peter to discover what it truly means to be Spider-Man.Natasha Romanoff confronts the darker parts of her ledger when a dangerous conspiracy with ties to her past arises."
   },
   {
+    "id": 4,
     "title": "Friend Zone",
     "genre": "Action",
     "durations": 148,
@@ -40,6 +44,7 @@ List<Map<String, dynamic>> moviesData = [
             "Right then, sparks fly wildly inside Palm's mind: this might be his only chance to cross the borderline. But he has no way of knowing if leaving the FRIEND ZONE this time will lead him to the beginning of his romantic love life or to the end of his friendship with Gink forever."
   },
   {
+    "id": 5,
     "title": "Spider-Man No Way Home",
     "genre": "Action",
     "durations": 148,
