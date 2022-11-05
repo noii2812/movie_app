@@ -154,18 +154,18 @@ class _HomeScreenState extends State<HomeScreen> {
                                       height: 5,
                                     ),
                                     Row(
-                                      children: const [
-                                        Icon(Icons.access_time,
+                                      children: [
+                                        const Icon(Icons.access_time,
                                             size: 16, color: Colors.white38),
-                                        SizedBox(
+                                        const SizedBox(
                                           width: 2,
                                         ),
                                         // Text(
                                         //   "9:30 Am",
                                         //   style: TextStyle(color: Colors.white38),
                                         // ),
-                                        Text("2h 28min",
-                                            style: TextStyle(
+                                        Text("${movie.durations} min",
+                                            style: const TextStyle(
                                                 color: Colors.white38))
                                       ],
                                     )
